@@ -4,13 +4,13 @@ import { DateRangePicker } from "react-date-range";
 import type { Range } from "react-date-range";
 import Dialog from "./components/Dialog";
 import { Button } from "./components/Button";
-import { set } from "date-fns";
 
 function App() {
   const [guests, setGuests] = useState<string[]>([]);
   const [showInviteEmail, setShowInviteEmail] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [disabledInput, setDisabledInput] = useState(false);
+  const [disabledCalendar, setDisabledCalendar] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [destination, setDestination] = useState<string>("");
   const [range, setRange] = useState<Range[]>([
@@ -54,11 +54,13 @@ function App() {
     setShowInviteEmail(true);
     setDisabledInput(true);
     setShowCalendar(false);
+    setDisabledCalendar(true);
   };
 
   const handleHideInviteEmail = () => {
     setShowInviteEmail(false);
     setDisabledInput(false);
+    setDisabledCalendar(false);
   };
   const handleShowDialog = () => {
     setShowDialog(true);
@@ -110,7 +112,9 @@ function App() {
                     <Button onClick={closeCalendar}>Fechar calendário</Button>
                   </div>
                 ) : (
-                  <Button onClick={openCalendar}>Abrir calendario</Button>
+                  <Button onClick={openCalendar} disabled={disabledCalendar}>
+                    Abrir calendario
+                  </Button>
                 )}
               </div>
 
