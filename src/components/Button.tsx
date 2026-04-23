@@ -11,7 +11,7 @@ export function Button({ onClick, children, disabled }: ButtonProps) {
     <button
       onClick={onClick}
       disabled={disabled}
-      className="bg-lime-300 text-lime-950 rounded-lg p-5 font-medium flex items-center">
+      className="bg-lime-300 text-lime-950 rounded-lg p-5 gap-2 font-medium flex items-center">
       {children ?? <ArrowRight />}
     </button>
   );

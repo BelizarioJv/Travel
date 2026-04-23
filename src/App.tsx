@@ -1,9 +1,12 @@
 import { PlaneTakeoff, Calendar, MapPin, User } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DateRangePicker } from "react-date-range";
 import type { Range } from "react-date-range";
 import Dialog from "./components/Dialog";
 import { Button } from "./components/Button";
+import { Input } from "./components/Input";
+import { tripsService } from "./services/api";
+import type { Destination } from "./services/api";
 
 function App() {
   const [guests, setGuests] = useState<string[]>([]);
@@ -12,7 +15,9 @@ function App() {
   const [disabledInput, setDisabledInput] = useState(false);
   const [disabledCalendar, setDisabledCalendar] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
-  const [destination, setDestination] = useState<string>("");
+  const [query, setQuery] = useState<string>("");
+  const [results, setResults] = useState<Destination[]>([]);
+  const [selectedDestination, setSelectedDestination] = useState<string>("");
   const [range, setRange] = useState<Range[]>([
     {
       startDate: new Date(),
@@ -39,15 +44,26 @@ function App() {
         " | Data de término: " +
         endDate.toLocaleDateString() +
         " | Destino: " +
-        destination,
+        selectedDestination,
     );
   };
 
-  const closeCalendar = () => {
-    setShowCalendar(false);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      tripsService.searchDestination(query).then((res) => setResults(res));
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [query]);
+
+  const handleSelectDestination = (name: string) => {
+    setSelectedDestination(name);
+    setQuery(name);
+    setResults([]);
   };
-  const openCalendar = () => {
-    setShowCalendar(true);
+
+  const handleCalendar = () => {
+    setShowCalendar(!showCalendar);
   };
 
   const handleShowInviteEmail = () => {
@@ -87,14 +103,25 @@ function App() {
             <div className="flex flex-col intem-center gap-5">
               <div className=" bg-zinc-500 rounded-lg p-5 shadow-lg shadow-black/80">
                 <MapPin />
-                <input
-                  className="p-2 mt-2 outline-0 font-bold text-2xl"
-                  type="text"
-                  placeholder="Quando voce deseja ir?"
+                <Input
+                  onChange={setQuery}
                   disabled={disabledInput}
-                  value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
+                  value={query}
+                  placeholder="Qual sera o destino ?"
                 />
+
+                {results.length > 0 && (
+                  <div className="mt-2 bg-zinc-700 rounded shadow-lg max-h-40 overflow-y-auto">
+                    {results.map((result) => (
+                      <div
+                        key={result.id}
+                        className="p-3 hover:bg-white cursor-pointer text-zinc-400"
+                        onClick={() => handleSelectDestination(result.name)}>
+                        {result.name}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className=" flex flex-col justify-center items-center gap-5 bg-zinc-500 rounded-lg p-4 shadow-lg shadow-black/80">
@@ -109,11 +136,11 @@ function App() {
                         direction="horizontal"
                       />
                     </div>
-                    <Button onClick={closeCalendar}>Fechar calendário</Button>
+                    <Button onClick={handleCalendar}>Fechar calendário</Button>
                   </div>
                 ) : (
-                  <Button onClick={openCalendar} disabled={disabledCalendar}>
-                    Abrir calendario
+                  <Button onClick={handleCalendar} disabled={disabledCalendar}>
+                    <Calendar /> Abrir calendario
                   </Button>
                 )}
               </div>
