@@ -1,73 +1,107 @@
-# React + TypeScript + Vite
+# 🌍 Travel Planner
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação web para planejamento de viagens com foco em experiência do usuário, integração com APIs externas e organização de código escalável.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Sobre o projeto
 
-## React Compiler
+O **Travel Planner** foi desenvolvido com o objetivo de aplicar, na prática, conceitos modernos de desenvolvimento front-end e integração com APIs.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+A aplicação permite que o usuário escolha um destino, selecione um intervalo de datas e visualize informações relevantes, como a previsão do tempo durante toda a viagem, além de adicionar convidados para um planejamento colaborativo.
 
-## Expanding the ESLint configuration
+Este projeto representa um avanço importante na minha jornada como desenvolvedor, unindo lógica, design e experiência do usuário em uma aplicação realista.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🚀 Funcionalidades
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+* 🔍 **Busca inteligente de destinos (autocomplete)**
+  Sugestões dinâmicas de cidades conforme o usuário digita
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+* 📅 **Seleção de intervalo de datas**
+  Calendário interativo para planejamento da viagem
+
+* 🌦️ **Previsão do tempo por período**
+  Integração com API de clima baseada em latitude e longitude
+
+* 👥 **Sistema de convidados**
+  Adição de participantes para a viagem
+
+* 🎨 **Interface moderna e responsiva**
+  Design limpo utilizando TailwindCSS
+
+---
+
+## 🧠 Tecnologias utilizadas
+
+* **React**
+* **TypeScript**
+* **TailwindCSS**
+* **JavaScript (ES6+)**
+* **Consumo de APIs externas**
+
+  * Geocoding (para converter cidade em latitude/longitude)
+  * Weather API (para previsão do tempo)
+
+---
+
+## 📦 Estrutura do projeto
+
+O projeto segue uma organização baseada em responsabilidades:
+
+```
+src/
+ ├── components/     # Componentes reutilizáveis
+ ├── services/       # Comunicação com APIs
+ ├── hooks/          # Lógica separada (custom hooks)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## ⚙️ Como rodar o projeto
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Clone o repositório
+git clone https://github.com/seu-usuario/travel-planner
+
+# Acesse a pasta
+cd travel-planner
+
+# Instale as dependências
+npm install
+
+# Rode o projeto
+npm run dev
 ```
+
+---
+
+## 📈 Aprendizados
+
+Durante o desenvolvimento deste projeto, aprofundei conhecimentos em:
+
+* Consumo e tratamento de dados de APIs
+* Manipulação de datas e estados complexos
+* Organização de código com boas práticas
+* Experiência do usuário (UX/UI)
+* Separação de responsabilidades (services, hooks, components)
+
+---
+
+## 🚀 Próximos passos
+
+* 📊 Exibir dados em gráficos
+* 🌍 Integração com IA para criaçao de Roteiro
+* 🔐 Autenticação de usuários
+* 💾 Persistência de dados (backend)
+
+---
+
+## 💬 Considerações finais
+
+Este projeto foi uma excelente oportunidade para consolidar meus conhecimentos e evoluir como desenvolvedor, indo além da implementação técnica e focando também na construção de uma experiência real para o usuário.
+
+---
+
+Feito com dedicação 🚀
