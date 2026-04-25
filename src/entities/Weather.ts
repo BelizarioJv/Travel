@@ -1,10 +1,3 @@
-export interface WeatherParams {
-  latitude: number;
-  longitude: number;
-  startDate: string;
-  endDate: string;
-}
-
 export interface Weather {
   latitude: number;
   longitude: number;

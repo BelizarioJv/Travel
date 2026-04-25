@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Plus, X } from "lucide-react";
+
 type DialogProps = {
   showDialog: boolean;
   setShowDialog: React.Dispatch<React.SetStateAction<boolean>>;
@@ -7,8 +8,12 @@ type DialogProps = {
   setGuests: React.Dispatch<React.SetStateAction<string[]>>;
 };
 
-export default function Dialog( {showDialog, setShowDialog , guests , setGuests}: DialogProps) {
-
+export function Dialog({
+  showDialog,
+  setShowDialog,
+  guests,
+  setGuests,
+}: DialogProps) {
   const [newGuest, setNewGuest] = useState<string>("");
 
   return (

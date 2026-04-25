@@ -1,5 +1,12 @@
-import type { Weather, WeatherParams } from "../entities/Weather";
+import type { Weather } from "../entities/Weather";
 import type { Destination } from "../entities/Destination";
+
+export interface WeatherParams {
+  latitude: number;
+  longitude: number;
+  startDate: string;
+  endDate: string;
+}
 
 export const tripsService = {
   async searchDestination(query: string): Promise<Destination[]> {

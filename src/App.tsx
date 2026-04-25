@@ -1,101 +1,45 @@
 import { PlaneTakeoff, Calendar, MapPin, User } from "lucide-react";
-import { useEffect, useState } from "react";
-import { DateRangePicker } from "react-date-range";
-import type { Range } from "react-date-range";
-import Dialog from "./components/Dialog";
+import { useState } from "react";
+import { useDestination } from "./hooks/useDestination";
+import { useWeather } from "./hooks/useWeather";
+import { useDateRange } from "./hooks/useDateRange";
+import { Dialog } from "./components/Dialog";
 import { Button } from "./components/Button";
 import { Input } from "./components/Input";
-import { tripsService } from "./services/api";
-import type { Destination } from "./entities/Destination";
-import type { Weather } from "./entities/Weather";
+import { CalendarPicker } from "./components/Calendar";
 
 function App() {
   const [guests, setGuests] = useState<string[]>([]);
-  const [showInviteEmail, setShowInviteEmail] = useState(false);
-  const [showDialog, setShowDialog] = useState(false);
-  const [disabledInput, setDisabledInput] = useState(false);
-  const [disabledCalendar, setDisabledCalendar] = useState(false);
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [query, setQuery] = useState<string>("");
-  const [results, setResults] = useState<Destination[]>([]);
-  const [selectedDestination, setSelectedDestination] = useState<Destination>();
-  const [weather, setWeather] = useState<Weather | null>(null);
-  const [range, setRange] = useState<Range[]>([
-    {
-      startDate: new Date(),
-      endDate: new Date(),
-      key: "selection",
-    },
-  ]);
-  const startDate = range[0].startDate ?? new Date();
-  const endDate = range[0].endDate ?? new Date();
 
-  const formatDate = (date: Date) => {
-    return date.toISOString().split("T")[0];
-  };
-  const startDateFormatted = formatDate(startDate);
-  const endDateFormatted = formatDate(endDate);
+  //Hooks criados para a aplicaçao
+  const { query, setQuery, results, selectedDestination, selectDestination } =
+    useDestination();
+  const { weather, getWeatherData } = useWeather();
+  const {
+    startDateFormatted,
+    endDateFormatted,
+    showInviteEmail,
+    handleCalendar,
+    showDialog,
+    disabledInput,
+    handleShowInviteEmail,
+    handleHideInviteEmail,
+    disabledCalendar,
+    handleShowDialog,
+    showCalendar,
+    setShowDialog,
+  } = useDateRange();
 
+  //Funçao para cuidar do submit do formulario
   const handleSubmit = () => {
-    const weatherData: Weather = {
-      latitude: selectedDestination?.latitude ?? 0,
-      longitude: selectedDestination?.longitude ?? 0,
-      dates: [],
+    if (!selectedDestination) return;
+
+    getWeatherData({
+      latitude: selectedDestination.latitude,
+      longitude: selectedDestination.longitude,
       startDate: startDateFormatted,
       endDate: endDateFormatted,
-      temperature_2m_max: [],
-      temperature_2m_min: [],
-    };
-
-    tripsService
-      .getWeather(weatherData)
-      .then((weather) => {
-        console.log(weather);
-        setWeather(weather);
-      })
-      .catch((error) => {
-        console.error("Erro ao obter dados do clima:", error);
-      });
-  };
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      tripsService.searchDestination(query).then((res) => setResults(res));
-    }, 500);
-
-    return () => clearTimeout(timeout);
-  }, [query]);
-
-  useEffect(() => {
-    const handleClickOutside = () => setResults([]);
-    window.addEventListener("click", handleClickOutside);
-
-    return () => window.removeEventListener("click", handleClickOutside);
-  }, []);
-
-  const handleSelectDestination = (city: Destination) => {
-    setQuery(city.name);
-    setSelectedDestination(city);
-  };
-
-  const handleCalendar = () => {
-    setShowCalendar(!showCalendar);
-  };
-
-  const handleShowInviteEmail = () => {
-    setShowInviteEmail(true);
-    setDisabledInput(true);
-    setShowCalendar(false);
-    setDisabledCalendar(true);
-  };
-
-  const handleHideInviteEmail = () => {
-    setShowInviteEmail(false);
-    setDisabledInput(false);
-    setDisabledCalendar(false);
-  };
-  const handleShowDialog = () => {
-    setShowDialog(true);
+    });
   };
 
   return (
@@ -118,6 +62,7 @@ function App() {
           <div className="flex flex-col items-center gap-5 mt-5 bg-zinc-300 rounded-lg p-5 shadow-lg shadow-black/80">
             <div className="flex flex-col intem-center gap-5">
               <div className=" bg-zinc-500 rounded-lg p-5 shadow-lg shadow-black/80">
+                {/* Input com a query para buscar a cidade na API */}
                 <MapPin />
                 <Input
                   onChange={setQuery}
@@ -126,13 +71,14 @@ function App() {
                   placeholder="Qual sera o destino ?"
                 />
 
+                {/* Dropdown com os resultados da query */}
                 {results.length > 0 && (
                   <div className="mt-2 bg-zinc-700 rounded shadow-lg max-h-40 overflow-y-auto">
                     {results.map((result) => (
                       <div
                         key={result.id}
                         className="p-3 hover:bg-white cursor-pointer text-zinc-400"
-                        onClick={() => handleSelectDestination(result)}>
+                        onClick={() => selectDestination(result)}>
                         {result.name} , {result.contry}
                       </div>
                     ))}
@@ -140,17 +86,12 @@ function App() {
                 )}
               </div>
 
+              {/* Calendario */}
               <div className=" flex flex-col justify-center items-center gap-5 bg-zinc-500 rounded-lg p-4 shadow-lg shadow-black/80">
                 {showCalendar ? (
                   <div className="flex flex-col items-center gap-2">
                     <div>
-                      <DateRangePicker
-                        onChange={(item) => setRange([item.selection])}
-                        moveRangeOnFirstSelection={false}
-                        months={1}
-                        ranges={range}
-                        direction="horizontal"
-                      />
+                      <CalendarPicker />
                     </div>
                     <Button onClick={handleCalendar}>Fechar calendário</Button>
                   </div>
@@ -186,7 +127,11 @@ function App() {
             )}
             <div>
               <Button
-                disabled={!selectedDestination || !startDate || !endDate}
+                disabled={
+                  !selectedDestination ||
+                  !startDateFormatted ||
+                  !endDateFormatted
+                }
                 onClick={handleSubmit}>
                 Criar viagem
               </Button>
@@ -204,19 +149,22 @@ function App() {
           />
         )}
 
-        <section className="flex flex-col items-center bg-zinc-600 rounded-lg shadow-lg shadow-black/80 border border-white/5 p-10">
-          {weather?.dates.map((day, index) => (
-            <div key={day} className="text-white">
-              <p>📅 {day}</p>
-              <p>
-                🌡️ {weather.temperature_2m_min[index]}°C -{" "}
-                {weather.temperature_2m_max[index]}°C
-              </p>
-            </div>
-          ))}
-        </section>
+        {/*Seção com as informaçoes do clima dos dias que foi escolhido pelo usuario*/}
+        {weather && (
+          <section className="flex flex-col items-center bg-zinc-600 rounded-lg shadow-lg shadow-black/80 border border-white/5 p-10">
+            {weather?.dates.map((day, index) => (
+              <div key={day} className="text-white">
+                <p>📅 {day}</p>
+                <p>
+                  🌡️ {weather.temperature_2m_min[index]}°C -{" "}
+                  {weather.temperature_2m_max[index]}°C
+                </p>
+              </div>
+            ))}
+          </section>
+        )}
 
-        {/*Texto  */}
+        {/*Texto de politica*/}
         <div className="flex items-center justify-center">
           <p>
             Ao planejar sua viagem pelça Travel.com voce automaticamente
