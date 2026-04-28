@@ -15,6 +15,7 @@ export function WeatherProvider({ children }: any) {
 
   const getWeatherData = async (params: any) => {
     const data = await tripsService.getWeather(params);
+    console.log(data.dates);
     setWeather(data);
   };
 

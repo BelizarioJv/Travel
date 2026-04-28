@@ -18,6 +18,8 @@ export function Form() {
     useDestination();
   const { getWeatherData } = useWeather();
   const {
+    range,
+    setRange,
     startDateFormatted,
     endDateFormatted,
     showInviteEmail,
@@ -92,7 +94,7 @@ export function Form() {
               {showCalendar ? (
                 <div className="flex flex-col items-center gap-2">
                   <div>
-                    <CalendarPicker />
+                    <CalendarPicker range={range} setRange={setRange} />
                   </div>
                   <Button onClick={handleCalendar}>Fechar calendário</Button>
                 </div>

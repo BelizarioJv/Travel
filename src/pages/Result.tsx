@@ -6,7 +6,7 @@ export function Result() {
   const navigate = useNavigate();
 
   return (
-    <section className=" bg-zinc-900 text-white p-6">
+    <section className="h-screen flex flex-col items-center justify-center gap-6">
       <h1 className="text-3xl font-bold mb-6 text-center">
         Resultado da sua viagem 🌍
       </h1>
@@ -15,15 +15,17 @@ export function Result() {
       <div className="mb-10">
         {/*Seção com as informaçoes do clima dos dias que foi escolhido pelo usuario*/}
         {weather && (
-          <div className="flex flex-col items-center bg-zinc-600 rounded-lg shadow-lg shadow-black/80 border border-white/5 p-10 w-">
-            {weather?.dates.map((day, index) => (
-              <div key={day} className="text-white">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 bg-zinc-600 rounded-lg shadow-lg shadow-black/80 border border-white/5 p-10 w-full">
+            {weather.dates.map((day, index) => (
+              <div
+                key={day}
+                className="bg-zinc-700 hover:bg-zinc-600  transition-all duration-300 rounded-xl p-5 shadow-md hover:shadow-xl flex flex-col gap-3">
                 <p>
                   📅 {getDayOfWeek(day)} ({day})
                 </p>
                 <p>
-                  🌡️ {weather.temperature_2m_min[index]}°C -{" "}
-                  {weather.temperature_2m_max[index]}°C
+                  🔥 Máxima: {weather.temperature_2m_max[index]} ❄️ Mínima:{" "}
+                  {weather.temperature_2m_min[index]}
                 </p>
               </div>
             ))}

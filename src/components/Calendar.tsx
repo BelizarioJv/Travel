@@ -1,9 +1,10 @@
-import { DateRangePicker } from "react-date-range";
-import { useDateRange } from "../hooks/useDateRange";
+import { DateRangePicker, type Range } from "react-date-range";
 
-export function CalendarPicker() {
-  const { range, setRange } = useDateRange();
-
+interface CalendarProps {
+  range: Range[];
+  setRange: React.Dispatch<React.SetStateAction<Range[]>>;
+}
+export function CalendarPicker({ range, setRange }: CalendarProps) {
   return (
     <div>
       <DateRangePicker
