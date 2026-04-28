@@ -16,7 +16,7 @@ export function Form() {
   //Hooks criados para a aplicaçao
   const { query, setQuery, results, selectedDestination, selectDestination } =
     useDestination();
-  const { weather, getWeatherData } = useWeather();
+  const { getWeatherData } = useWeather();
   const {
     startDateFormatted,
     endDateFormatted,
@@ -144,21 +144,6 @@ export function Form() {
           guests={guests}
           setGuests={setGuests}
         />
-      )}
-
-      {/*Seção com as informaçoes do clima dos dias que foi escolhido pelo usuario*/}
-      {weather && (
-        <div className="flex flex-col items-center bg-zinc-600 rounded-lg shadow-lg shadow-black/80 border border-white/5 p-10">
-          {weather?.dates.map((day, index) => (
-            <div key={day} className="text-white">
-              <p>📅 {day}</p>
-              <p>
-                🌡️ {weather.temperature_2m_min[index]}°C -{" "}
-                {weather.temperature_2m_max[index]}°C
-              </p>
-            </div>
-          ))}
-        </div>
       )}
     </section>
   );

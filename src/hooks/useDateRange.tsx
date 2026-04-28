@@ -17,6 +17,7 @@ export function useDateRange() {
   ]);
   const startDate = range[0].startDate ?? new Date();
   const endDate = range[0].endDate ?? new Date();
+
   const formatDate = (date: Date) => date.toISOString().split("T")[0];
 
   const handleCalendar = () => {
