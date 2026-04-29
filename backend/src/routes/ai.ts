@@ -13,10 +13,9 @@ router.post("/itinerary", async (req, res) => {
       weather,
     });
 
-    res.json({ itinerary }); // 👈 TEM QUE SER ASSIM
+    res.json({ itinerary });
   } catch (error) {
-    console.error("ERRO REAL:", error); // 👈 ADICIONA ISSO
-
+    console.error("ERRO REAL:", error);
     res.status(500).json({
       error: "Erro ao gerar roteiro",
     });
