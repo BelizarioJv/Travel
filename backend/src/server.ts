@@ -1,18 +1,23 @@
+import * as dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import cors from "cors";
-import * as dotenv from "dotenv";
 import OpenAI from "openai";
+import nodemailer from "nodemailer";
 
-dotenv.config();
-
-console.log(
-  "Minha chave OpenAI:",
-  process.env.OPENAI_API_KEY ? "Encontrada" : "NÃO ENCONTRADA",
-);
-
+const PORT = 5000;
 const app = express();
 app.use(cors());
 app.use(express.json());
+dotenv.config();
+
+// Interface de Criaçao de viagem para enviar por email e futuramente salvar no banco de dados
+export interface Trip {
+  tripId: string;
+  destination: string;
+  dates: string[];
+  itinerary: string;
+  link: string;
+}
 
 // Interface para tipar o corpo da requisição
 export interface WeatherParams {
@@ -20,10 +25,6 @@ export interface WeatherParams {
   longitude: number;
   startDate: string;
   endDate: string;
-}
-
-if (!process.env.OPENAI_API_KEY) {
-  throw new Error("OPENAI_API_KEY não configurada no .env");
 }
 
 const openai = new OpenAI({
@@ -82,8 +83,36 @@ app.post(
     }
   },
 );
+// rota para enviar o link da viagem para amigos
+app.post("/ai/send-email", async (req, res) => {
+  const { emails, link } = req.body;
 
-const PORT = 5000;
+  try {
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.USEREMAIL,
+        pass: process.env.USERPASSWORD,
+      },
+    });
+
+    await transporter.sendMail({
+      from: process.env.USEREMAIL,
+      to: emails.join(","),
+      subject: "🌍 Sua viagem foi planejada!",
+      html: `
+        <h2>Seu roteiro está pronto!</h2>-
+        <p>Clique no link abaixo para ver:</p>
+        <a href="${link}">${link}</a>
+      `,
+    });
+
+    res.status(200).send("Email enviado com sucesso!");
+  } catch (error: any) {
+    res.status(500).send("Erro ao enviar email: " + error.message);
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Servidor TS rodando em http://localhost:${PORT}`);
 });
